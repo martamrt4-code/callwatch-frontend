@@ -1,0 +1,43 @@
+{
+  "name": "SecurityEvent",
+  "type": "object",
+  "properties": {
+    "pc_name": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "anomali",
+        "uyari",
+        "bilgi",
+        "kritik"
+      ],
+      "default": "bilgi"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "dusuk",
+        "orta",
+        "yuksek",
+        "kritik"
+      ],
+      "default": "dusuk"
+    },
+    "source": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "pc_name",
+    "event_type"
+  ]
+}

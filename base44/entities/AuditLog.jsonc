@@ -1,0 +1,29 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "user",
+    "action"
+  ]
+}
