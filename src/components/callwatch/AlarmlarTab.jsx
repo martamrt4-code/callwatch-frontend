@@ -183,7 +183,7 @@ export default function AlarmlarTab() {
                         className="px-2 py-1 rounded text-xs border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10">✓</button>
                       <button onClick={() => closeMutation.mutate({id: alarm.id, status: 'false_positive', note: 'FP'})}
                         className="px-2 py-1 rounded text-xs border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10">FP</button>
-                      <AlarmScreenshot pcName={alarm.pc_name} ts={alarm.ts} />
+
                     </td>
                   </tr>
                 ))
@@ -207,35 +207,3 @@ export default function AlarmlarTab() {
   );
 }
 
-function AlarmScreenshot({ pcName, ts }) {
-  const [src, setSrc] = React.useState(null);
-  const [big, setBig] = React.useState(false);
-  React.useEffect(() => {
-    if (!pcName) return;
-    fetch(`/api/screenshots?pc_name=${encodeURIComponent(pcName)}`, {credentials:"include"})
-      .then(r => r.json())
-      .then(d => {
-        const shots = d.screenshots || [];
-        if (shots.length > 0) setSrc(`/screenshots/${shots[0].filename}`);
-      })
-      .catch(() => {});
-  }, [pcName]);
-  if (!src) return null;
-  return (
-    <>
-      <button onClick={e => { e.stopPropagation(); setBig(true); }}
-        className="px-2 py-1 rounded text-xs border border-sky-500/50 text-sky-400 hover:bg-sky-500/10 relative group"
-        title="Ekran Görüntüsü">
-        <Camera className="w-3 h-3" />
-        <div className="absolute bottom-8 right-0 hidden group-hover:block z-50">
-          <img src={src} alt="preview" className="w-32 h-20 object-cover rounded shadow-xl border border-border" />
-        </div>
-      </button>
-      {big && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80" onClick={() => setBig(false)}>
-          <img src={src} alt="ss" className="max-w-3xl max-h-[80vh] rounded shadow-2xl" />
-        </div>
-      )}
-    </>
-  );
-}

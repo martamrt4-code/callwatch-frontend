@@ -1,5 +1,5 @@
 import React from "react";
-import { Eye, BarChart3, Bell, GitBranch, Coffee, TreePine, List, FileText, RefreshCw, LogOut, Settings, Building2, TrendingUp, Globe, Camera, Calendar } from "lucide-react";
+import { Eye, BarChart3, Bell, GitBranch, Coffee, TreePine, List, FileText, RefreshCw, LogOut, Settings, Building2, TrendingUp, Globe, Calendar } from "lucide-react";
 import { callwatch } from "@/api/callwatchClient";
 
 const tabs = [
@@ -24,8 +24,12 @@ const tabs = [
 
 import { useAuth } from "@/lib/AuthContext";
 
-export default function Sidebar({ activeTab, onTabChange, stats, onRefresh, user }) {
+export default function Sidebar({ activeTab, onTabChange, stats, onRefresh, user, isAdmin }) {
   const { logout } = useAuth();
+  const visibleTabs = isAdmin 
+    ? [...tabs, { id: "yonetici", label: "Yönetici Paneli", icon: Settings }]
+    : tabs;
+
   return (
     <aside className="w-56 shrink-0 flex flex-col bg-[#070c18] border-r border-white/[0.05] h-screen">
       {/* Logo */}
@@ -67,7 +71,7 @@ export default function Sidebar({ activeTab, onTabChange, stats, onRefresh, user
       {/* Navigation */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
         <p className="text-[9px] text-muted-foreground uppercase tracking-widest px-2 mb-2">Modüller</p>
-        {tabs.map((tab) => {
+        {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (

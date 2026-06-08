@@ -83,35 +83,6 @@ export default function PCDetailModal({ device, onClose }) {
   );
 }
 
-function ScreenshotSection({ pcName }) {
-  const [screenshots, setScreenshots] = useState([]);
-  const [selected, setSelected] = useState(null);
-  useEffect(() => {
-    if (!pcName) return;
-    fetch(`/api/screenshots?pc_name=${encodeURIComponent(pcName)}`, {credentials:"include"})
-      .then(r => r.json())
-      .then(d => setScreenshots((d.screenshots || []).slice(0,6)))
-      .catch(() => {});
-  }, [pcName]);
-  if (screenshots.length === 0) return null;
-  return (
-    <div>
-      <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">Son Ekran Görüntüleri</div>
-      <div className="grid grid-cols-3 gap-1.5">
-        {screenshots.map(s => (
-          <img key={s.id} src={`/screenshots/${s.filename}`} alt={s.ts}
-            className="w-full h-16 object-cover rounded cursor-pointer border border-border hover:border-primary"
-            onClick={() => setSelected(s)} />
-        ))}
-      </div>
-      {selected && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80" onClick={() => setSelected(null)}>
-          <img src={`/screenshots/${selected.filename}`} alt={selected.ts} className="max-w-3xl max-h-[80vh] rounded shadow-2xl" />
-        </div>
-      )}
-    </div>
-  );
-}
 
 function InfoRow({ icon: Icon, label, value }) {
   return (

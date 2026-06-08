@@ -17,12 +17,10 @@ import TrendAnalizTab from "@/components/callwatch/TrendAnalizTab";
 import IFSkorGecmisiTab from "@/components/callwatch/IFSkorGecmisiTab";
 import YoneticiPaneliTab from "@/components/callwatch/YoneticiPaneliTab";
 import WebAktiviteTab from "@/components/callwatch/WebAktiviteTab";
-import ScreenshotGallery from "@/components/callwatch/ScreenshotGallery";
 import VardiyaRaporu from "@/components/callwatch/VardiyaRaporu";
 import AylikRiskRaporu from "@/components/callwatch/AylikRiskRaporu";
 
 const TAB_LABELS = {
-  screenshots: "Ekran Görüntüleri",
   overview: "Genel Bakış", alarmlar: "Alarmlar", risk: "Risk & Korelasyon",
   mola: "Mola Takibi", isolation: "Isolation Forest", olaylar: "Son Olaylar",
   audit: "Audit Log", pcyonetim: "PC Yönetimi", departman: "Departman Riski",
@@ -33,6 +31,13 @@ const TAB_LABELS = {
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [time, setTime] = useState(new Date());
+  const { data: meData = {} } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => fetch("/api/me", {credentials:"include"}).then(r=>r.json()),
+    staleTime: 60000,
+  });
+  const currentRole = meData.role || "viewer";
+  const isAdmin = currentRole === "admin";
   const queryClient = useQueryClient();
   const { data: alarmsData = {} } = useQuery({
     queryKey: ["alarms-notif"],
@@ -90,7 +95,6 @@ export default function Dashboard() {
       case "trend":       return <TrendAnalizTab devices={enrichedDevices} />;
       case "webaktivite": return <WebAktiviteTab />;
       case "yonetici":    return <YoneticiPaneliTab />;
-      case "screenshots":  return <ScreenshotGallery />;
       case "vardiya-raporu": return <VardiyaRaporu />;
       case "aylik-risk": return <AylikRiskRaporu />;
       default:            return <OverviewTab stats={stats} devices={enrichedDevices} />;
@@ -102,7 +106,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} stats={stats} onRefresh={handleRefresh} user={{ full_name: "Admin", role: "Yönetici" }} />
+      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} stats={stats} onRefresh={handleRefresh} user={{ full_name: meData.username || "Admin", role: currentRole }} isAdmin={isAdmin} />
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-12 shrink-0 bg-[#070c18] border-b border-white/[0.05] flex items-center justify-between px-6">
           <div className="flex items-center gap-2">
