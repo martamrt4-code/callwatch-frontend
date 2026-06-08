@@ -6,7 +6,6 @@ const tabs = [
   // --- İzleme ---
   { id: "overview",       label: "Genel Bakış",        icon: BarChart3 },
   { id: "alarmlar",       label: "Alarmlar",            icon: Bell },
-  { id: "mola",           label: "Mola Takibi",         icon: Coffee },
   { id: "webaktivite",    label: "Web Aktivite",        icon: Globe },
   { id: "olaylar",        label: "Son Olaylar",         icon: List },
   // --- Analiz ---
