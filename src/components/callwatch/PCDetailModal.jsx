@@ -76,8 +76,7 @@ export default function PCDetailModal({ device, onClose }) {
             <MetricCard label="Risk Skoru" value={device.risk_score || 0} max={100} color={riskColor} icon={Shield} />
             <MetricCard label="IF Skoru" value={Math.round((device.if_score || 0) * 100)} max={100} color="text-blue-400" icon={Zap} />
           </div>
-          {/* Screenshots */}
-          <ScreenshotSection pcName={d.pc_name} />
+
         </div>
       </div>
     </div>

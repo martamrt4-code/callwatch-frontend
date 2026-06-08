@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { callwatch, getDisplayName } from "@/api/callwatchClient";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Brain, X, Camera } from "lucide-react";
+import { Bell, Brain, X } from "lucide-react";
 import SearchInput from "./SearchInput";
 import PCDetailModal from "./PCDetailModal";
 import ExportButton from "./ExportButton";
