@@ -3,3 +3,5 @@ dist/
 *.log
 .env
 callwatch.db
+base44/
+callwatch.db
