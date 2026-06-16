@@ -214,12 +214,13 @@ export default function PCYonetimTab() {
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">GÖRÜNEN AD</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">SAHİP</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">DEPARTMAN</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">IP ADRESİ</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">İŞLEM</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={5} className="text-center py-8 text-muted-foreground">Yükleniyor...</td></tr>
+                <tr><td colSpan={6} className="text-center py-8 text-muted-foreground">Yükleniyor...</td></tr>
               ) : pcs.map((pc) => (
                 <tr key={pc.pc_name} className="border-b border-border/50 hover:bg-secondary/30">
                   {editingId === pc.pc_name ? (
@@ -228,6 +229,7 @@ export default function PCYonetimTab() {
                       <td className="px-4 py-2"><input value={editForm.display_name} onChange={e=>setEditForm({...editForm,display_name:e.target.value})} className="bg-input border border-border rounded px-2 py-1 text-xs w-full" /></td>
                       <td className="px-4 py-2"><input value={editForm.owner_name} onChange={e=>setEditForm({...editForm,owner_name:e.target.value})} className="bg-input border border-border rounded px-2 py-1 text-xs w-full" /></td>
                       <td className="px-4 py-2"><input value={editForm.department} onChange={e=>setEditForm({...editForm,department:e.target.value})} className="bg-input border border-border rounded px-2 py-1 text-xs w-full" /></td>
+                      <td className="px-4 py-2 font-mono text-xs text-muted-foreground">{pc.ip_address || '—'}</td>
                       <td className="px-4 py-2 flex gap-1">
                         <button onClick={() => updateMutation.mutate({pc_name: pc.pc_name, ...editForm})} className="px-2 py-1 rounded text-xs bg-emerald-600 text-white"><Check className="w-3 h-3" /></button>
                         <button onClick={() => setEditingId(null)} className="px-2 py-1 rounded text-xs border border-border"><X className="w-3 h-3" /></button>
@@ -239,6 +241,7 @@ export default function PCYonetimTab() {
                       <td className="px-4 py-3 text-xs">{pc.display_name || '—'}</td>
                       <td className="px-4 py-3 text-xs text-muted-foreground">{pc.owner_name || '—'}</td>
                       <td className="px-4 py-3 text-xs text-muted-foreground">{pc.department || '—'}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{pc.ip_address || '—'}</td>
                       <td className="px-4 py-3 flex gap-1">
                         <button onClick={() => { setEditingId(pc.pc_name); setEditForm({display_name: pc.display_name||'', owner_name: pc.owner_name||'', department: pc.department||''}); }}
                           className="px-2 py-1 rounded text-xs border border-border hover:bg-secondary"><Pencil className="w-3 h-3" /></button>
