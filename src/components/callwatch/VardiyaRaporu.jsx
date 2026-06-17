@@ -1,7 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, TrendingUp, AlertTriangle, Download } from "lucide-react";
+
+function PdfDownloadButton() {
+  const [loading, setLoading] = useState(false);
+  const handleClick = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/report/pdf?period=vardiya", { credentials: "include" });
+      if (!res.ok) throw new Error("Sunucu hatası");
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `callwatch_vardiya_raporu_${new Date().toISOString().slice(0,10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      alert("İndirme başarısız: " + e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  return (
+    <button onClick={handleClick} disabled={loading}
+      className="px-3 py-1 rounded text-xs border border-blue-500/40 text-blue-400 hover:bg-blue-500/10 flex items-center gap-1 disabled:opacity-50">
+      {loading ? "⏳ Hazırlanıyor..." : "📄 PDF İndir"}
+    </button>
+  );
+}
 
 const VARDIYA_LABELS = { sabah: "🌅 Sabah", oglen: "☀️ Öğle", gece: "🌙 Gece" };
 const VARDIYA_COLORS = { sabah: "text-yellow-400", oglen: "text-orange-400", gece: "text-blue-400" };
@@ -72,6 +99,7 @@ export default function VardiyaRaporu() {
             }} className="px-3 py-1 rounded text-xs border border-border hover:bg-secondary flex items-center gap-1">
               <Download className="w-3 h-3" /> CSV İndir
             </button>
+            <PdfDownloadButton />
             <input type="month" value={ayFilter} onChange={e => setAyFilter(e.target.value)}
               className="bg-secondary border border-border rounded px-2 py-1 text-xs text-foreground" />
             {["tumu","sabah","oglen","gece"].map(v => (
