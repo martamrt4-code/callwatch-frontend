@@ -25,9 +25,7 @@ import { useAuth } from "@/lib/AuthContext";
 
 export default function Sidebar({ activeTab, onTabChange, stats, onRefresh, user, isAdmin }) {
   const { logout } = useAuth();
-  const visibleTabs = isAdmin 
-    ? [...tabs, { id: "yonetici", label: "Yönetici Paneli", icon: Settings }]
-    : tabs;
+  const visibleTabs = tabs;
 
   return (
     <aside className="w-56 shrink-0 flex flex-col bg-[#070c18] border-r border-white/[0.05] h-screen">
