@@ -164,22 +164,6 @@ export default function PCYonetimTab() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [profilePC, setProfilePC] = useState(null);
-  const [warningPC, setWarningPC] = useState(null);
-
-
-  const warnMutation = useMutation({
-    mutationFn: (pc_name) => fetch('/api/warn-pc', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({pc_name})
-    }).then(r=>r.json()),
-    onSuccess: (data, pc_name) => {
-      alert(`✓ ${pc_name} için uyarı gönderildi!`);
-      setWarningPC(null);
-    },
-    onError: () => setWarningPC(null),
-  });
 
   const { data = {}, isLoading } = useQuery({
     queryKey: ["pc-names"],
