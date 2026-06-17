@@ -1,11 +1,10 @@
 import React from "react";
-import { BarChart3, Bell, GitBranch, Coffee, TreePine, List, FileText, Building2, TrendingUp } from "lucide-react";
+import { BarChart3, Bell, GitBranch, List, FileText, Building2, TrendingUp } from "lucide-react";
 
 const tabs = [
   { id: "overview", label: "Genel Bakış", icon: BarChart3 },
   { id: "alarmlar", label: "Alarmlar", icon: Bell },
   { id: "risk", label: "Risk & Korelasyon", icon: GitBranch },
-  { id: "mola", label: "Mola Takibi", icon: Coffee },
   { id: "olaylar", label: "Son Olaylar", icon: List },
   { id: "audit", label: "Audit Log", icon: FileText },
   { id: "departman", label: "Departman Riski", icon: Building2 },

@@ -1,5 +1,5 @@
 import React from "react";
-import { Eye, BarChart3, Bell, GitBranch, Coffee, TreePine, List, FileText, RefreshCw, LogOut, Settings, Building2, TrendingUp, Globe, Calendar } from "lucide-react";
+import { Eye, BarChart3, Bell, GitBranch, TreePine, List, FileText, RefreshCw, LogOut, Settings, Building2, TrendingUp, Globe, Calendar } from "lucide-react";
 import { callwatch } from "@/api/callwatchClient";
 
 const tabs = [
