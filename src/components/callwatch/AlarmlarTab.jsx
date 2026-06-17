@@ -94,11 +94,51 @@ function AIAnalysisModal({ alarm, onClose }) {
   );
 }
 
+function NoteModal({ alarm, action, onConfirm, onClose }) {
+  const [note, setNote] = useState("");
+  const isClose = action === "closed";
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-4 border-b border-slate-700">
+          <span className="font-semibold text-white text-sm">
+            {isClose ? "✓ Alarm Kapat" : "FP İşaretle"}
+          </span>
+          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="text-xs text-slate-400 bg-slate-800 rounded p-2 font-mono">{alarm.pc_name} — {alarm.alarm_type}</div>
+          <div>
+            <label className="text-xs text-slate-400 mb-1 block">Not / Gerekçe <span className="text-slate-600">(isteğe bağlı)</span></label>
+            <textarea
+              autoFocus
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              placeholder="Örn: Kullanıcı onaylı, test aktivitesi..."
+              rows={3}
+              className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-sm text-white placeholder:text-slate-500 resize-none focus:outline-none focus:border-slate-400"
+            />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <button onClick={onClose} className="px-3 py-1.5 rounded text-xs border border-slate-600 text-slate-400 hover:text-white">İptal</button>
+            <button
+              onClick={() => { onConfirm(note); onClose(); }}
+              className={`px-3 py-1.5 rounded text-xs font-medium text-white ${isClose ? "bg-emerald-600 hover:bg-emerald-700" : "bg-yellow-600 hover:bg-yellow-700"}`}>
+              {isClose ? "Kapat" : "FP İşaretle"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AlarmlarTab() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedAlarm, setSelectedAlarm] = useState(null);
   const [detailPC, setDetailPC] = useState(null);
+  const [noteModal, setNoteModal] = useState(null); // { alarm, action }
   const PAGE_SIZE = 20;
   const queryClient = useQueryClient();
 
@@ -125,6 +165,14 @@ export default function AlarmlarTab() {
     <div className="p-4">
       {detailPC && <PCDetailModal device={detailPC} onClose={() => setDetailPC(null)} />}
       {selectedAlarm && <AIAnalysisModal alarm={selectedAlarm} onClose={() => setSelectedAlarm(null)} />}
+      {noteModal && (
+        <NoteModal
+          alarm={noteModal.alarm}
+          action={noteModal.action}
+          onConfirm={(note) => closeMutation.mutate({ id: noteModal.alarm.id, status: noteModal.action, note })}
+          onClose={() => setNoteModal(null)}
+        />
+      )}
       <div className="bg-card border border-border rounded-lg overflow-hidden">
         <div className="p-4 border-b border-border flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2">
@@ -179,9 +227,9 @@ export default function AlarmlarTab() {
                         className="px-2 py-1 rounded text-xs border border-purple-500/50 text-purple-400 hover:bg-purple-500/10">
                         <Brain className="w-3 h-3" />
                       </button>
-                      <button onClick={() => closeMutation.mutate({id: alarm.id, status: 'closed', note: ''})}
+                      <button onClick={(e) => { e.stopPropagation(); setNoteModal({ alarm, action: 'closed' }); }}
                         className="px-2 py-1 rounded text-xs border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10">✓</button>
-                      <button onClick={() => closeMutation.mutate({id: alarm.id, status: 'false_positive', note: 'FP'})}
+                      <button onClick={(e) => { e.stopPropagation(); setNoteModal({ alarm, action: 'false_positive' }); }}
                         className="px-2 py-1 rounded text-xs border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10">FP</button>
 
                     </td>
