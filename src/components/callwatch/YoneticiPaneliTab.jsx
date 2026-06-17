@@ -78,10 +78,12 @@ export default function YoneticiPaneliTab() {
   const [newUsername, setNewUsername] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [newRole, setNewRole] = React.useState("viewer");
+  const [newDept, setNewDept] = React.useState("");
+  const [newFullName, setNewFullName] = React.useState("");
 
   const addUserMutation = useMutation({
     mutationFn: (d) => fetch('/api/users/add',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(r=>r.json()),
-    onSuccess: () => { refetchUsers(); setNewUsername(""); setNewPassword(""); },
+    onSuccess: () => { refetchUsers(); setNewUsername(""); setNewPassword(""); setNewDept(""); setNewFullName(""); },
   });
 
   const deleteUserMutation = useMutation({
@@ -208,8 +210,8 @@ export default function YoneticiPaneliTab() {
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Kullanıcı</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">E-posta</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Kayıt Tarihi</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ad Soyad</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Departman</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Rol</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">İşlem</th>
               </tr>
@@ -227,9 +229,18 @@ export default function YoneticiPaneliTab() {
                       <span className="text-foreground text-xs font-medium">{u.username || u.full_name || "—"}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">{u.email}</td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {u.created_date ? new Date(u.created_date).toLocaleDateString("tr-TR") : "—"}
+                  <td className="px-4 py-3 text-muted-foreground text-xs">{u.full_name || "—"}</td>
+                  <td className="px-4 py-3 text-xs">
+                    <input
+                      defaultValue={u.department || ""}
+                      onBlur={e => {
+                        const dept = e.target.value.trim();
+                        if (dept !== (u.department || ""))
+                          fetch('/api/users/role',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u.username,role:u.role,department:dept})}).then(()=>refetchUsers());
+                      }}
+                      placeholder="Departman..."
+                      className="bg-secondary border border-border rounded px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-28"
+                    />
                   </td>
                   <td className="px-4 py-3">
                     <select
@@ -251,13 +262,15 @@ export default function YoneticiPaneliTab() {
           </table>
           <div className="p-4 border-t border-border flex gap-2 flex-wrap">
             <input value={newUsername} onChange={e=>setNewUsername(e.target.value)} placeholder="Kullanıcı adı" className="bg-secondary border border-border rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50" />
+            <input value={newFullName} onChange={e=>setNewFullName(e.target.value)} placeholder="Ad Soyad" className="bg-secondary border border-border rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50" />
             <input value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="Şifre" type="password" className="bg-secondary border border-border rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50" />
+            <input value={newDept} onChange={e=>setNewDept(e.target.value)} placeholder="Departman" className="bg-secondary border border-border rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-28" />
             <select value={newRole} onChange={e=>setNewRole(e.target.value)} className="bg-secondary border border-border rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50">
               <option value="admin">admin</option>
               <option value="manager">manager</option>
               <option value="viewer">viewer</option>
             </select>
-            <button onClick={() => addUserMutation.mutate({username:newUsername,password:newPassword,role:newRole})} className="px-3 py-1.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-xs hover:bg-primary/20 transition-all">+ Kullanıcı Ekle</button>
+            <button onClick={() => addUserMutation.mutate({username:newUsername,password:newPassword,role:newRole,department:newDept,full_name:newFullName})} className="px-3 py-1.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-xs hover:bg-primary/20 transition-all">+ Kullanıcı Ekle</button>
           </div>
         </div>
       )}
