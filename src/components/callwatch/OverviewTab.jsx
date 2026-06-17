@@ -1,9 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { callwatch } from "@/api/callwatchClient";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { Activity, AlertTriangle, Bell, Flame, Monitor, Shield, Zap } from "lucide-react";
 import ThreatScoreGauge from "./ThreatScoreGauge";
+
+function DownloadButton({ url, filename, label, className }) {
+  const [loading, setLoading] = useState(false);
+  const handleClick = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(url, { credentials: "include" });
+      if (!res.ok) throw new Error("Sunucu hatası");
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      alert("İndirme başarısız: " + e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [url, filename]);
+  return (
+    <button onClick={handleClick} disabled={loading}
+      className={`px-3 py-2 text-xs font-medium rounded-lg border transition-colors disabled:opacity-50 ${className}`}>
+      {loading ? "⏳ Hazırlanıyor..." : label}
+    </button>
+  );
+}
 
 function RankedList({ riskScores }) {
   const [page, setPage] = React.useState(1);
@@ -187,14 +214,8 @@ export default function OverviewTab() {
             className="px-3 py-2 text-xs font-medium rounded-lg border border-emerald-500/30 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors">
             📊 Excel İndir
           </a>
-          <a href="/api/report/pdf?period=monthly" target="_blank"
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-blue-500/30 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 transition-colors">
-            📄 PDF Rapor
-          </a>
-          <a href="/api/report/pdf?period=weekly" target="_blank"
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-purple-500/30 text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 transition-colors">
-            📄 Haftalık PDF
-          </a>
+          <DownloadButton url="/api/report/pdf?period=monthly" filename="callwatch_aylik_rapor.pdf" label="📄 PDF Rapor" className="border-blue-500/30 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20" />
+          <DownloadButton url="/api/report/pdf?period=weekly" filename="callwatch_haftalik_rapor.pdf" label="📄 Haftalık PDF" className="border-purple-500/30 text-purple-400 bg-purple-500/10 hover:bg-purple-500/20" />
         </div>
       </div>
     </div>
